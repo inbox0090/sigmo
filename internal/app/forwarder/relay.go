@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/godbus/dbus/v5"
 
@@ -150,6 +151,11 @@ func (r *Relay) stopAll() {
 }
 
 func (r *Relay) forward(m *modem.Modem, message *modem.SMS) error {
+	incoming := message.State == modem.SMSStateReceived || message.State == modem.SMSStateReceiving
+	if incoming && !message.Timestamp.IsZero() && time.Since(message.Timestamp) > 30*time.Minute {
+		slog.Info("skipping SMS notification older than 30 minutes", "timestamp", message.Timestamp, "modem", m.EquipmentIdentifier)
+		return nil
+	}
 	return r.notifier.Send(r.formatMessage(m, message))
 }
 
