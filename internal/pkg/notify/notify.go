@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log/slog"
 	"strings"
+	"sync"
 
 	"github.com/damonto/sigmo/internal/pkg/config"
-	"golang.org/x/sync/errgroup"
 )
 
 type Message interface {
@@ -89,17 +89,23 @@ func (n *Notifier) Send(message Message, channels ...string) error {
 	if len(targets) == 0 {
 		return nil
 	}
-	var group errgroup.Group
+	var combined error
+	var mu sync.Mutex
+	var wg sync.WaitGroup
 	for _, target := range targets {
 		sender := n.channels[target]
-		group.Go(func() error {
+		wg.Add(1)
+		go func(target string, sender Sender) {
+			defer wg.Done()
 			if err := sender.Send(message); err != nil {
-				return fmt.Errorf("%s send failed: %w", target, err)
+				mu.Lock()
+				combined = errors.Join(combined, fmt.Errorf("%s send failed: %w", target, err))
+				mu.Unlock()
 			}
-			return nil
-		})
+		}(target, sender)
 	}
-	return group.Wait()
+	wg.Wait()
+	return combined
 }
 
 // SendTo sends a message to a specific sender.
