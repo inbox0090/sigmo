@@ -70,7 +70,6 @@ func createSender(name string, channel config.Channel) (Sender, error) {
 // If no channels are specified, the message will be sent to all configured channels.
 func (n *Notifier) Send(message Message, channels ...string) error {
 	var targets []string
-
 	if len(channels) == 0 {
 		// Send to all configured channels
 		for name := range n.cfg.Channels {
@@ -87,13 +86,11 @@ func (n *Notifier) Send(message Message, channels ...string) error {
 			targets = append(targets, channelName)
 		}
 	}
-
 	if len(targets) == 0 {
 		return nil
 	}
 	var group errgroup.Group
 	for _, target := range targets {
-		target := target
 		sender := n.channels[target]
 		group.Go(func() error {
 			if err := sender.Send(message); err != nil {
