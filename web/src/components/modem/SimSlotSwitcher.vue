@@ -138,7 +138,9 @@ const confirmTitle = computed(() => {
               </span>
             </div>
             <div class="min-w-0">
-              <p class="truncate text-sm font-semibold text-foreground">{{ pendingOperatorName }}</p>
+              <p class="truncate text-sm font-semibold text-foreground">
+                {{ pendingOperatorName }}
+              </p>
               <p class="truncate text-xs text-muted-foreground">{{ pendingIdentifierValue }}</p>
             </div>
           </CardContent>

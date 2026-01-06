@@ -33,6 +33,16 @@ type Channel struct {
 
 	// HTTP
 	Headers map[string]string `toml:"headers"`
+
+	// Email
+	SMTPHost     string `toml:"smtp_host"`
+	SMTPPort     int    `toml:"smtp_port"`
+	SMTPUsername string `toml:"smtp_username"`
+	SMTPPassword string `toml:"smtp_password"`
+	From         string `toml:"from"`
+	Subject      string `toml:"subject"`
+	TLSPolicy    string `toml:"tls_policy"`
+	SSL          bool   `toml:"ssl"`
 }
 
 type Modem struct {

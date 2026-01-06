@@ -11,6 +11,8 @@ require (
 	github.com/godbus/dbus/v5 v5.2.2
 	github.com/gorilla/websocket v1.5.3
 	github.com/labstack/echo/v4 v4.15.0
+	github.com/wneessen/go-mail v0.7.2
+	golang.org/x/sync v0.19.0
 	golang.org/x/sys v0.39.0
 )
 

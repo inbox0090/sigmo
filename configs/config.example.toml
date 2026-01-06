@@ -11,4 +11,18 @@
 
   [channels.http]
     endpoint = "https://httpbin.org/post"
-    headers = { "Content-Type" = "application/json", "Authorization" = "Bearer 1234567890" }
+
+    [channels.http.headers]
+      Authorization = "Bearer 1234567890"
+      Content-Type = "application/json"
+
+  [channels.email]
+    smtp_host = "smtp.example.com"
+    smtp_port = 587
+    smtp_username = "user@example.com"
+    smtp_password = "app_password"
+    from = "sigmo@example.com"
+    recipients = ["ops@example.com"]
+    subject = "Sigmo Notification"
+    tls_policy = "mandatory"
+    ssl = false

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/damonto/sigmo/internal/pkg/config"
+	"golang.org/x/sync/errgroup"
 )
 
 type Message interface {
@@ -58,6 +59,8 @@ func createSender(name string, channel config.Channel) (Sender, error) {
 		return NewTelegram(&channel)
 	case "http":
 		return NewHTTP(&channel)
+	case "email":
+		return NewEmail(&channel)
 	default:
 		return nil, fmt.Errorf("unsupported channel type: %s", name)
 	}
@@ -88,13 +91,18 @@ func (n *Notifier) Send(message Message, channels ...string) error {
 	if len(targets) == 0 {
 		return nil
 	}
-	var combined error
+	var group errgroup.Group
 	for _, target := range targets {
-		if err := n.channels[target].Send(message); err != nil {
-			combined = errors.Join(combined, fmt.Errorf("%s send failed: %w", target, err))
-		}
+		target := target
+		sender := n.channels[target]
+		group.Go(func() error {
+			if err := sender.Send(message); err != nil {
+				return fmt.Errorf("%s send failed: %w", target, err)
+			}
+			return nil
+		})
 	}
-	return combined
+	return group.Wait()
 }
 
 // SendTo sends a message to a specific sender.

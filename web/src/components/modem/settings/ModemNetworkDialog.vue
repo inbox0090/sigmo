@@ -66,12 +66,7 @@ const { t } = useI18n()
       </div>
 
       <DialogFooter>
-        <Button
-          variant="ghost"
-          type="button"
-          :disabled="props.isRegistering"
-          @click="open = false"
-        >
+        <Button variant="ghost" type="button" :disabled="props.isRegistering" @click="open = false">
           {{ t('modemDetail.actions.cancel') }}
         </Button>
         <Button

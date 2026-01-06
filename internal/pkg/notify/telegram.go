@@ -20,10 +20,9 @@ const defaultTelegramEndpoint = "https://api.telegram.org"
 const telegramParseModeMarkdownV2 = "MarkdownV2"
 
 type Telegram struct {
-	client     *http.Client
-	baseURL    url.URL
-	botToken   string
-	recipients []int64
+	client         *http.Client
+	sendMessageURL string
+	recipients     []int64
 }
 
 type telegramMessage struct {
@@ -57,11 +56,12 @@ func NewTelegram(cfg *config.Channel) (*Telegram, error) {
 	if len(recipients) == 0 {
 		return nil, errors.New("telegram recipients is required")
 	}
+	sendMessageURL := *baseURL
+	sendMessageURL.Path = path.Join(sendMessageURL.Path, "bot"+cfg.BotToken, "sendMessage")
 	return &Telegram{
-		client:     &http.Client{Timeout: 10 * time.Second},
-		baseURL:    *baseURL,
-		botToken:   cfg.BotToken,
-		recipients: recipients,
+		client:         &http.Client{Timeout: 10 * time.Second},
+		sendMessageURL: sendMessageURL.String(),
+		recipients:     recipients,
 	}, nil
 }
 
@@ -92,9 +92,7 @@ func (t *Telegram) sendOne(to int64, text string) error {
 	if err != nil {
 		return fmt.Errorf("encoding telegram message: %w", err)
 	}
-	endpoint := t.baseURL
-	endpoint.Path = path.Join(endpoint.Path, "bot"+t.botToken, "sendMessage")
-	req, err := http.NewRequest(http.MethodPost, endpoint.String(), bytes.NewReader(body))
+	req, err := http.NewRequest(http.MethodPost, t.sendMessageURL, bytes.NewReader(body))
 	if err != nil {
 		return fmt.Errorf("building telegram request: %w", err)
 	}

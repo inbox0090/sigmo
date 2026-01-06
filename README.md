@@ -108,7 +108,20 @@ be writable by the Sigmo process.
 
   [channels.http]
     endpoint = "https://httpbin.org/post"
-    headers = { "Content-Type" = "application/json", "Authorization" = "Bearer 1234567890" }
+    [channels.http.headers]
+      Authorization = "Bearer 1234567890"
+      Content-Type = "application/json"
+
+  [channels.email]
+    smtp_host = "smtp.example.com"
+    smtp_port = 587
+    smtp_username = "user@example.com"
+    smtp_password = "app_password"
+    from = "sigmo@example.com"
+    recipients = ["ops@example.com"]
+    subject = "Sigmo Notification"
+    tls_policy = "mandatory"
+    ssl = false
 
 [modems]
   [modems."YOUR_MODEM_EQUIPMENT_ID"]
@@ -121,9 +134,10 @@ Notes:
 
 - `app.environment` is used to decide log verbosity (`production` keeps logs quieter).
 - `app.listen_address` is the bind address for the HTTP server.
-- `app.auth_providers` selects which channels are allowed for OTP login (`telegram`, `http`).
+- `app.auth_providers` selects which channels are allowed for OTP login (`telegram`, `http`, `email`).
 - `channels.*` are also used for SMS forwarding. If no channels are configured, OTP
   login and SMS forwarding are disabled.
+- `channels.email.tls_policy` supports `mandatory` (default), `opportunistic`, and `none`; set `channels.email.ssl = true` for SMTPS on port 465.
 - `modems` is keyed by ModemManager EquipmentIdentifier (the modem ID shown by the UI).
 - `modems.*.alias` is the display name shown in the UI.
 - `modems.*.compatible` enables legacy modem restarts after profile changes.

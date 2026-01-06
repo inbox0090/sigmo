@@ -7,7 +7,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="min-h-[100dvh] bg-background">
+  <div class="min-h-dvh bg-background">
     <div class="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 py-10">
       <header class="flex flex-col gap-2">
         <h1 class="text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
@@ -30,7 +30,9 @@ const { t } = useI18n()
               {{ t('messages.emptyDescription') }}
             </p>
           </div>
-          <div class="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">
+          <div
+            class="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground"
+          >
             {{ t('messages.emptyPlaceholder') }}
           </div>
         </CardContent>

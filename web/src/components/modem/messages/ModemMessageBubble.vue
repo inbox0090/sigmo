@@ -7,9 +7,7 @@ const props = defineProps<{
   item: ThreadMessageItem
 }>()
 
-const containerClass = computed(() =>
-  props.item.incoming ? 'justify-start' : 'justify-end',
-)
+const containerClass = computed(() => (props.item.incoming ? 'justify-start' : 'justify-end'))
 
 const bubbleClass = computed(() =>
   props.item.incoming ? 'bg-muted/60 text-foreground' : 'bg-primary text-primary-foreground',

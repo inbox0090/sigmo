@@ -1,5 +1,9 @@
 import { useFetch } from '@/lib/fetch'
-import type { AuthOtpRequirementResponse, AuthVerifyPayload, AuthVerifyResponse } from '@/types/auth'
+import type {
+  AuthOtpRequirementResponse,
+  AuthVerifyPayload,
+  AuthVerifyResponse,
+} from '@/types/auth'
 
 export const useAuthApi = () => {
   const sendCode = () => {
