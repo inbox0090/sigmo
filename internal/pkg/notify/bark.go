@@ -13,7 +13,7 @@ import (
 	"github.com/damonto/sigmo/internal/pkg/config"
 )
 
-const defaultBarkEndpoint = "https://api.day.app/push"
+const defaultBarkEndpoint = "https://api.day.app"
 const defaultBarkTitle = "Sigmo Notification"
 
 type Bark struct {
@@ -34,10 +34,7 @@ func NewBark(cfg *config.Channel) (*Bark, error) {
 	if err != nil {
 		return nil, err
 	}
-	parsed.Path = strings.TrimRight(parsed.Path, "/")
-	if strings.Trim(parsed.Path, "/") == "" {
-		parsed.Path = "/push"
-	}
+	ensureEndpointPath(parsed, "push")
 	deviceKeys := cfg.Recipients.Strings()
 	if len(deviceKeys) == 0 {
 		return nil, errors.New("bark recipients are required")

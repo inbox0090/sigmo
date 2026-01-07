@@ -28,10 +28,7 @@ func NewGotify(cfg *config.Channel) (*Gotify, error) {
 	if err != nil {
 		return nil, err
 	}
-	parsed.Path = strings.TrimRight(parsed.Path, "/")
-	if strings.Trim(parsed.Path, "/") == "" {
-		parsed.Path = "/message"
-	}
+	ensureEndpointPath(parsed, "message")
 	query := parsed.Query()
 	query.Del("token")
 	parsed.RawQuery = query.Encode()

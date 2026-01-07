@@ -3,6 +3,7 @@ package notify
 import (
 	"fmt"
 	"net/url"
+	"path"
 	"strings"
 )
 
@@ -22,4 +23,17 @@ func parseEndpoint(name string, raw string, fallback string) (*url.URL, error) {
 		return nil, fmt.Errorf("%s endpoint must include scheme and host", name)
 	}
 	return parsed, nil
+}
+
+func ensureEndpointPath(parsed *url.URL, segment string) {
+	trimmed := strings.TrimRight(parsed.Path, "/")
+	if trimmed == "" {
+		parsed.Path = "/" + segment
+		return
+	}
+	if strings.HasSuffix(trimmed, "/"+segment) {
+		parsed.Path = trimmed
+		return
+	}
+	parsed.Path = path.Join(trimmed, segment)
 }
