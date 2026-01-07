@@ -266,7 +266,8 @@ watch(renameOpen, (value) => {
       <div
         v-for="profile in profiles"
         :key="profile.id"
-        class="flex items-center justify-between rounded-lg bg-card px-4 py-3 shadow-sm"
+        class="flex items-center justify-between rounded-lg border bg-card px-4 py-3 shadow-sm transition"
+        :class="profile.enabled ? 'border-primary/40 bg-primary/5' : 'border-transparent'"
       >
         <div class="flex min-w-0 items-center gap-3">
           <div
@@ -298,7 +299,6 @@ watch(renameOpen, (value) => {
         <div class="flex items-center gap-3">
           <Switch
             :model-value="profile.enabled"
-            :disabled="profile.enabled"
             @update:model-value="(nextValue) => handleToggle(profile, nextValue)"
           />
 
