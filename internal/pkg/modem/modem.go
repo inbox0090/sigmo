@@ -73,6 +73,11 @@ func (m *Modem) Restart(compatible bool) error {
 		time.Sleep(200 * time.Millisecond)
 	}
 
+	// Try to activate provisioning session if SIM is missing.
+	if compatible {
+		err = errors.Join(err, qmicliActivateProvisioningIfSimMissing(m))
+	}
+
 	// Some legacy modems require the modem to be disabled and enabled to take effect.
 	if e := m.dbusObject.Call(ModemInterface+".Simple.GetStatus", 0).Err; e == nil {
 		slog.Info("try to disable and enable modem", "modem", m.EquipmentIdentifier)
@@ -84,9 +89,6 @@ func (m *Modem) Restart(compatible bool) error {
 		// Inhibiting the device will cause the ModemManager to reload the device.
 		time.Sleep(200 * time.Millisecond)
 		if e := m.dbusObject.Call(ModemInterface+".Simple.GetStatus", 0).Err; e == nil {
-			// Try to activate provisioning session if SIM is missing.
-			err = errors.Join(err, qmicliActivateProvisioningIfSimMissing(m))
-
 			slog.Info("try to inhibit and uninhibit modem", "modem", m.EquipmentIdentifier, "compatible", compatible)
 			err = errors.Join(err, m.mmgr.InhibitDevice(m.Device, true), m.mmgr.InhibitDevice(m.Device, false))
 		}
