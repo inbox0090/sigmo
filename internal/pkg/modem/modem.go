@@ -70,7 +70,7 @@ func (m *Modem) Restart(compatible bool) error {
 	if m.PrimaryPortType() == ModemPortTypeQmi {
 		err = errors.Join(err, qmicliRepowerSimCard(m))
 		// Wait for the SIM card to be ready.
-		time.Sleep(200 * time.Millisecond)
+		time.Sleep(1 * time.Second)
 	}
 
 	// Try to activate provisioning session if SIM is missing.
@@ -87,7 +87,7 @@ func (m *Modem) Restart(compatible bool) error {
 	// This workaround is needed for some modems that don't properly reload.
 	if compatible {
 		// Inhibiting the device will cause the ModemManager to reload the device.
-		time.Sleep(200 * time.Millisecond)
+		time.Sleep(1 * time.Second)
 		if e := m.dbusObject.Call(ModemInterface+".Simple.GetStatus", 0).Err; e == nil {
 			slog.Info("try to inhibit and uninhibit modem", "modem", m.EquipmentIdentifier, "compatible", compatible)
 			err = errors.Join(err, m.mmgr.InhibitDevice(m.Device, true), m.mmgr.InhibitDevice(m.Device, false))
