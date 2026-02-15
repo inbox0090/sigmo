@@ -5,7 +5,7 @@ export const useModemDisplay = () => {
    * Get signal icon based on quality percentage (0-100)
    */
   const signalIcon = (percentage: number) => {
-    if (percentage === 0) return SignalHigh
+    if (percentage === 0) return SignalZero
     if (percentage >= 70) return SignalHigh
     if (percentage >= 50) return SignalMedium
     if (percentage >= 30) return SignalLow
